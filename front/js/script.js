@@ -12,9 +12,9 @@ fetch('http://localhost:3000/api/products')
             // Examine the text in the response
             response.json().then(function(data) {
                 console.log('products: ', data);
-                var html = '';
-                data.forEach(item=>{
-                    html += make_html_for_card(item);
+                let html = '';
+                data.forEach(item => {
+                    html += make_html_for_product(item);
                 })
                 element.innerHTML=html
             });
@@ -23,15 +23,18 @@ fetch('http://localhost:3000/api/products')
     .catch(function(err) {
         console.log('Fetch Error :-S', err);
     });
-
-function make_html_for_card(card) {
-    let lien = './product.html?id='+card._id
-    return '<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6" id="' + card._id + '" onclick="redirect(\'' + card._id + '\')">' +
-        '<h3 class="mt-card-name" href="./product.html?id='+card._id+'">' + card.name + '</h3>' +
-        '<a><img src="'+card.imageUrl+'" alt="'+card.altTxt+'" style="max-height: 100px; max-width: 100px"></a>'+
-        '<h3>'+card.price+ '€</h3>'+
-        '</div>';
+//<a> <article> <img> <h3> <p></artcile></a>
+function make_html_for_product(product) {
+    return `<a href="./product.html?id=${product._id}">
+    <article>
+      <img src="${product.imageUrl}" alt="${product.altText}">
+      <h3 class="productName">${product.name}</h3>
+      <p class="productDescription">${product.description}</p>
+    </article>
+  </a>`;
 }
+
+
 
 function redirect(id) {
     console.log(id)

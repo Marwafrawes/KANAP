@@ -22,21 +22,23 @@ fetch('http://localhost:3000/api/products/'+ id)
                 //exemple en une étape
                 document.getElementById('title').textContent= data.name
                 document.getElementById('description').textContent = data.description
+                
 
                 const colorsElement = document.getElementById('colors')
                 data.colors.forEach(color => {
                     const option = colorsElement.appendChild(document.createElement('option'))
                     option.textContent = color
                 })
-                // var imgDiv = document.getElementsByClassName('item__img') TODO à vérifier car ca ne marche pas avec le className
-                const imgDiv = document.getElementById('image')
+                //let imgDiv = document.getElementsByClassName('item__img') 
+                const imgDiv = document.getElementsByClassName('image')
                 console.log(imgDiv)
                 const DOM_img = document.createElement("img");
-                console.log(DOM_img)
+                console.log(DOM_img)    
                 DOM_img.src = data.imageUrl
                 DOM_img.alt = data.altTxt
                 imgDiv.appendChild(DOM_img)
             });
+            
         }
     )
     .catch(function(err) {
