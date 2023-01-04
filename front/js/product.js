@@ -17,26 +17,22 @@ fetch('http://localhost:3000/api/products/'+ id)
             response.json().then(function(data) {
                 console.log('product: ', data);
                 //exemple en deux étape
-                const price = document.getElementById('price');
+                let price = document.getElementById('price');
                 price.textContent = data.price
                 //exemple en une étape
                 document.getElementById('title').textContent= data.name
                 document.getElementById('description').textContent = data.description
                 
 
-                const colorsElement = document.getElementById('colors')
+                let colorsElement = document.getElementById('colors')
                 data.colors.forEach(color => {
-                    const option = colorsElement.appendChild(document.createElement('option'))
+                    let option = colorsElement.appendChild(document.createElement('option'))
                     option.textContent = color
                 })
                 //let imgDiv = document.getElementsByClassName('item__img') 
-                const imgDiv = document.getElementsByClassName('image')
-                console.log(imgDiv)
-                const DOM_img = document.createElement("img");
-                console.log(DOM_img)    
-                DOM_img.src = data.imageUrl
-                DOM_img.alt = data.altTxt
-                imgDiv.appendChild(DOM_img)
+                let img = document.querySelector(".item__img");
+                img.innerHTML = `<img src="${data.imageUrl}" alt="${data.altTxt}">`;
+                
             });
             
         }
