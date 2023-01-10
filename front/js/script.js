@@ -14,7 +14,7 @@ fetch('http://localhost:3000/api/products')
                 console.log('products: ', data);
                 let html = '';
                 data.forEach(item => {
-                    html += make_html_for_product(item);
+                    html += makeHhtmlForProduct(item);
                 })
                 element.innerHTML=html
             });
@@ -24,7 +24,7 @@ fetch('http://localhost:3000/api/products')
         console.log('Fetch Error :-S', err);
     });
 //<a> <article> <img> <h3> <p></artcile></a>
-function make_html_for_product(product) {
+function makeHhtmlForProduct(product) {
     return `<a href="./product.html?id=${product._id}">
     <article>
       <img src="${product.imageUrl}" alt="${product.altText}">
