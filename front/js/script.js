@@ -23,7 +23,7 @@ fetch('http://localhost:3000/api/products')
     .catch(function(err) {
         console.log('Fetch Error :-S', err);
     });
-//<a> <article> <img> <h3> <p></artcile></a>
+//fonction pour afficher le produit avec les différentes spécificités ( img , txt, name, color) 
 function makeHhtmlForProduct(product) {
     return `<a href="./product.html?id=${product._id}">
     <article>
@@ -33,9 +33,7 @@ function makeHhtmlForProduct(product) {
     </article>
   </a>`;
 }
-
-
-
+// fontction pour nous diriger vers une autre adresse 
 function redirect(id) {
     console.log(id)
     window.location.href = `../html/product.html?id=`+id

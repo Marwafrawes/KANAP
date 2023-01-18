@@ -5,9 +5,10 @@ const urlParams = new URLSearchParams(queryString);
 const id = urlParams.get('id')
 console.log(id);
 let product = {}; 
-
+let globalPrice = 0;
 fetch('http://localhost:3000/api/products/'+ id)
     .then(
+
         function(response) {
             if (response.status !== 200) {
                 console.log('Looks like there was a problem. Status Code: ' +
@@ -21,16 +22,17 @@ fetch('http://localhost:3000/api/products/'+ id)
                 product = data; 
                 //exemple en deux étape
                 let price = document.getElementById('price');
-                price.textContent = data.price
+                price.textContent = data.price; 
+                globalPrice = data.price; 
                 //exemple en une étape
-                document.getElementById('title').textContent= data.name
-                document.getElementById('description').textContent = data.description
+                document.getElementById('title').textContent= data.name;
+                document.getElementById('description').textContent = data.description;
                 
 
-                let colorsElement = document.getElementById('colors')
+                let colorsElement = document.getElementById('colors');
                 data.colors.forEach(color => {
-                    let option = colorsElement.appendChild(document.createElement('option'))
-                    option.textContent = color
+                    let option = colorsElement.appendChild(document.createElement('option'));
+                    option.textContent = color;
                 })
                 //let imgDiv = document.getElementsByClassName('item__img') 
                 let img = document.querySelector(".item__img");
@@ -63,7 +65,15 @@ function addProduct(product){
     if(localStorage.getItem('products')){
         products = JSON.parse(localStorage.getItem('products')); // prend une chaine de caractère est transforme en objet 
     } // je fais la meme chose dans la page cart // récupérer des élments 
+    product.price = undefined; // ne pas stocker le prix 
     products.push(product); 
     localStorage.setItem('products', JSON.stringify(products)); // prend un objet est transforme en une chaine de caractère 
 }
  
+  
+ const quantity = document.getElementById("quantity"); // récuoérer la quantité 
+// créer un évenemnt 
+quantity.addEventListener("change",() => {
+const price = document.getElementById("price"); 
+price.innerHTML = globalPrice * quantity.value; 
+}); 
