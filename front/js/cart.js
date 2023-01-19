@@ -21,25 +21,7 @@ const sectionPositionHtml = document.getElementById("cart__items");
     let totalPriceCart = 0; 
     let myProducts = []; 
 //----------------------Fonction Calcul de la quantité total d'articles dans le panier, au chargement de la page Panier.html-----------------
-function totalProductsQuantity(){
-  totalQuantity += parseInt(totalProductsQty);
-  console.log("Total quantité panier",totalQuantity);
-  document.getElementById("totalQuantity").innerText = totalQuantity;
-}
-//-------Fonction calculer le prix total par produit 
-function totalProductsPrice (){
-  totalPriceCart = totalProductQty * totalPriceCart;  // calcul pour le prix total de chaque roduit 
-  totalPrice += totalPriceCart
-  console.log("le prix total du panier",totalPrice);
-  document.getElementById("totalPrice").innerText = totalPrice; 
-  
-}
 
-// une focntion pour afficher les totau liée aux quatités et aux prix 
-function totaxPriceQty(){
-  totalProductsQuantity();
-  totalProductsPrice();
-}
 // function recalcul total quantité 
 function reTotalQuantity(){ 
   let newTotalqty = 0; 
@@ -62,21 +44,27 @@ function reTotalPrice (){
 
 
 // boucle while si la condition est vraie 
-let html = ""
-let index = -1 
+let html = "";
+let index = 0;
 let tableauLength = productsList.length; 
-let totalCart = 0 
-while (tableauLength > 0  ) {
-  console.log('productsList.length', productsList.length);
-    index += 1 
-    console.log(index);
-    console.log(productsList[1]);
-    tableauLength-- ; // un produit de moins
-    html += makeCartProductHtml(productsList[index],index)
-
+let totalCart = 0;
+let totalQty = 0;
+while (index < productsList.length) {
+  html += makeCartProductHtml(productsList[index],index);
+  totalCart += productsList[index].price * productsList[index].qty; // afficher le prix total
+  totalQty += parseInt(productsList[index].qty); // afficher la quantité total  
+  index++;// incrémenter la variable de 1 
 }
-let price = document.getElementsByClassName("cart__price");
+
+// pour afficher les produit Appel 
+document.getElementById("cart__items").innerHTML=html; 
 console.log('totalcart',totalCart);
+
+// pour afficher le prix total 
+document.getElementById("totalPrice").innerText=totalCart; 
+
+// pour afficher le total article 
+document.getElementById("totalQuantity").innerText=totalQty; 
 // création d'une foction pour supprimer l'article 
 function suppprod(index){
 

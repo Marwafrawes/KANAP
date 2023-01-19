@@ -53,20 +53,26 @@ const toCartBtn = document.getElementById("addToCart");
     // créer un evenement clic
 toCartBtn.addEventListener("click", () => {
 const color = document.querySelector('#colors').value; 
-const qty = document.querySelector('#quantity').value; 
+const qty = parseInt(document.querySelector('#quantity').value); 
 product.color = color; 
 product.qty = qty; 
 addProduct(product); 
     window.location.href = "./cart.html";
   });
-  // créaton d'un Array depuis ID 
+  // créaton d'un Array depuis ID et stocker les donner 
 function addProduct(product){
     let products = [];
     if(localStorage.getItem('products')){
         products = JSON.parse(localStorage.getItem('products')); // prend une chaine de caractère est transforme en objet 
-    } // je fais la meme chose dans la page cart // récupérer des élments 
-    product.price = undefined; // ne pas stocker le prix 
-    products.push(product); 
+        const productIndex = products.findIndex((pro) => product._id === pro._id && product.color === pro.color);
+        if (productIndex > -1) {
+            products[productIndex].qty += product.qty; 
+        }
+        else
+            products.push(product); 
+    } // je fais la meme chose dans la page cart // récupérer des élments  
+    else
+        products.push(product);
     localStorage.setItem('products', JSON.stringify(products)); // prend un objet est transforme en une chaine de caractère 
 }
  
