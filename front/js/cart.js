@@ -1,4 +1,5 @@
 //cart = panier 
+//localStorage est une API qui existe dans les navigateurs pour permettre d'enregister des donnés 
 // Récupérer les infos envoyées dans le panier (transformé de JSON en objet JS et stocké dans le navigateur)
 function getProductsinLocalstorage() {
   let productsList = [];
@@ -22,27 +23,6 @@ const sectionPositionHtml = document.getElementById("cart__items");
     let myProducts = []; 
 //----------------------Fonction Calcul de la quantité total d'articles dans le panier, au chargement de la page Panier.html-----------------
 
-// function recalcul total quantité 
-function reTotalQuantity(){ 
-  let newTotalqty = 0; 
-  for (const item of productsList) {
-    newTotalqty += parseInt (item.qty);
-  }
-  console.log("nouvelle quantité total",newTotalqty);
-document.getElementById("totalQuantity") = newTotalqty; 
-}
-// function recalcul price 
-function reTotalPrice (){
-  let newTotalPrice = 0; 
-  for (const item of productsList){ 
-    const ProductLocalStorage = item.idProduct;
-    const productqtylocalStorage = item.quantityProduct; 
-    const findProducts = produitsTotaux.find((element) => element._id === idLocalStorage);
-  }
-}
-// 
-
-
 // boucle while si la condition est vraie 
 let html = "";
 let index = 0;
@@ -56,7 +36,7 @@ while (index < productsList.length) {
   index++;// incrémenter la variable de 1 
 }
 
-// pour afficher les produit Appel 
+// pour afficher les produit on fait un Appel 
 document.getElementById("cart__items").innerHTML=html; 
 console.log('totalcart',totalCart);
 
@@ -72,7 +52,42 @@ function suppprod(index){
     localStorage.setItem("products", JSON.stringify(productsList));
     window.location.reload() //La méthode Location.reload() recharge la ressource depuis l'URL actuelle.
     window.scrollTo(0,0);
+    //Alerte concernant un article supprimé
+alert("Ce produit va être supprimé du panier.");
 }
+// fonction pour recalculer la quantité totale d'articles 
+function reTotalqty (){
+  let totalQtynew = 0; 
+  for ( const item of productsList) {
+    totalQtynew += parseInt(item.qty)
+  }
+  console.log("Nouvelle quantité totale panier",totalQtynew);
+  document.getElementById("totalQuantity").innerText = totalQtynew;
+}
+ // function recalcul price 
+ function reTotalprice (){
+  let totalPricenew = 0; 
+  for ( const item of productsList) {
+    totalPricenew += parseInt(item.price) * parseInt(item.qty);
+  }
+ console.log("Nouveau prix total panier",totalPricenew);
+  document.getElementById("totalPrice").innerText = totalPricenew;
+}
+// ajouter un événement pour changer la quatité totale apres modification ( ajout ou suppr) 
+
+let quantity = document.querySelector("input[name='itemQuantity']")
+quantity.addEventListener("input", () => {
+ //  alert("Valeur changée"); pour vérifier 
+  // changement de la valeur dans LocalStorage 
+  const quantityIndex = productsList.findIndex((pro) => quantity.closest('.cart__item').getAttribute('data-id') === pro._id);
+  if (quantityIndex > -1) {
+      productsList[quantityIndex].qty = quantity.value;
+      // console.log(productsList[quantityIndex].qty) ; pour vérifier 
+  }
+localStorage.setItem('products', JSON.stringify(productsList)); 
+reTotalqty();// pour éxuter notre fonction reTotalqty
+reTotalprice();
+})
 
 // contruire le Html d'un prduit 
 function makeCartProductHtml (product,index) {
@@ -93,20 +108,36 @@ return `<article class="cart__item" data-id=${product._id} data-color=${product.
       <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${product.qty}>
     </div>
     <div class="cart__item__content__settings__delete">
-      <a onclick="suppprod(${index})" class="deleteItem">Supprimer</a>
+      <a href="#" onclick="suppprod(${index})" class="deleteItem">Supprimer</a> <!-- création bouton pour supprimer -->
     </div>
   </div>
 </div>
 </article> ` 
 }
 
+// console.log(localStorage);
+
+// partie contact nom /prenom./etc 
+function ValidateEmail(input) {
+
+  const validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+  if (input.value.match(validRegex)) {
+    return true;
+
+  } else {
+    return false;
+  }
+
+}
+const order = document.getElementById('order');
+order.addEventListener("click", () => {
+  if (ValidateEmail(document.getElementById("email")) === false)
+    document.getElementById("emailErrorMsg").innerText = "email invalide";
+else 
+document.getElementById("emailErrorMsg").innerText = "";
+});
 
 
-console.log(localStorage);
 
 
-/*async function getPrice (productsList, index) {
-
-  const response = await fetch('http://localhost:3000/api/products/'+ productsList[index].id);  // récupérer le premier élément dans notre tableau et dans l'ID 
-    return await response.json(); 
-}*/
