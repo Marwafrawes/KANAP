@@ -47,7 +47,6 @@ fetch('http://localhost:3000/api/products/'+ id)
     });
 
 
-
     //HTML element  : pour ajouter les produits dans le panier 
 const toCartBtn = document.getElementById("addToCart");
     // créer un evenement clic

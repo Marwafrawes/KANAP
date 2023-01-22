@@ -199,8 +199,12 @@ if (validContact === true) {
   console.log(contact);
   const products = productsList.map(product => product._id);
   console.log(products);
-  fetch('http://localhost:3000/api/products/order', {
+  fetch('http://localhost:3000/api/products/order',  {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+
     body: JSON.stringify({
       contact: contact,
       products: products
@@ -209,7 +213,7 @@ if (validContact === true) {
   .then(
 
       function(response) {
-          if (response.status !== 200) {
+          if (response.status !== 201) {
               console.log('Looks like there was a problem. Status Code: ' +
                   response.status);
               return;
@@ -217,6 +221,7 @@ if (validContact === true) {
 
           // Examine the text in the response
           response.json().then(function(data) {
+            window.location.href = "./confirmation.html?order=" + data.orderId;// passer à la page confirmation.html
               console.log('confirmation: ', data);
               });
           
@@ -230,6 +235,7 @@ if (validContact === true) {
 }
 e.preventDefault();// pour ne pas refraichir la page 
 });
+//////
 
 
 
