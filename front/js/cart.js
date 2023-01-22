@@ -117,7 +117,20 @@ return `<article class="cart__item" data-id=${product._id} data-color=${product.
 
 // console.log(localStorage);
 
-// partie contact nom /prenom./etc 
+// firstName
+
+function validateEntry(input) {
+
+  const regName = /^[a-zA-Z ]+$/;
+//match est une fonction pour bien vérifier sir les caratères. 
+  if (input.value.match(regName)) {
+    return true;
+
+  } else {
+    return false;
+  }
+}
+// contact email 
 function ValidateEmail(input) {
 
   const validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -131,12 +144,95 @@ function ValidateEmail(input) {
 
 }
 const order = document.getElementById('order');
-order.addEventListener("click", () => {
-  if (ValidateEmail(document.getElementById("email")) === false)
-    document.getElementById("emailErrorMsg").innerText = "email invalide";
-else 
-document.getElementById("emailErrorMsg").innerText = "";
+order.addEventListener("click", (e) => {
+  let validContact = true;
+
+//fisrtName
+if (validateEntry(document.getElementById("firstName")) === false) {
+  validContact = false
+
+document.getElementById("firstNameErrorMsg").innerText = "le prénom n'est pas valide";
+}else {
+document.getElementById("firstNameErrorMsg").innerText = "";
+}
+//lastName 
+if (validateEntry(document.getElementById("lastName")) === false) {
+  validContact = false
+document.getElementById("lastNameErrorMsg").innerText = "le nom n'est pas valide";
+}else {
+  document.getElementById("lastNameErrorMsg").innerText = "";
+}
+
+//Adresse 
+if (validateEntry(document.getElementById("address")) === false) {
+  validContact = false
+document.getElementById("addressErrorMsg").innerText = "l'adresse n'est pas valide";
+}else {
+  document.getElementById("addressErrorMsg").innerText = "";
+}
+
+//Ville /city
+if (validateEntry(document.getElementById("city")) === false){
+  validContact = false
+document.getElementById("cityErrorMsg").innerText = "la ville n'est pas valide";
+}else {
+  document.getElementById("cityErrorMsg").innerText = "";
+}
+
+//email
+if (ValidateEmail(document.getElementById("email")) === false) {
+  validContact = false;
+  document.getElementById("emailErrorMsg").innerText = "email invalide";
+} else {
+  document.getElementById("emailErrorMsg").innerText = "";
+}
+
+if (validContact === true) {
+//  Constituer un objet contact (à partir des données du formulaire) et un tableau de produits.
+  const contact = {
+    firstName: document.getElementById("firstName").value, //.value pour stocker la valeur
+    lastName:document.getElementById("lastName").value,
+    address:document.getElementById("address").value,
+    city:document.getElementById("city").value,
+    email:document.getElementById("email").value,
+  }
+  console.log(contact);
+  const products = productsList.map(product => product._id);
+  console.log(products);
+  fetch('http://localhost:3000/api/products/order', {
+    method: 'POST',
+    body: JSON.stringify({
+      contact: contact,
+      products: products
+    })
+  })
+  .then(
+
+      function(response) {
+          if (response.status !== 200) {
+              console.log('Looks like there was a problem. Status Code: ' +
+                  response.status);
+              return;
+          }
+
+          // Examine the text in the response
+          response.json().then(function(data) {
+              console.log('confirmation: ', data);
+              });
+          
+      }
+  )
+  .catch(function(err) {
+      console.log('Fetch Error :-S', err);
+  });
+} else {
+  validContact = true;
+}
+e.preventDefault();// pour ne pas refraichir la page 
 });
+
+
+
 
 
 

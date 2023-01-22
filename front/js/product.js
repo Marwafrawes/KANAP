@@ -66,7 +66,8 @@ function addProduct(product){
         products = JSON.parse(localStorage.getItem('products')); // prend une chaine de caractère est transforme en objet 
         const productIndex = products.findIndex((pro) => product._id === pro._id && product.color === pro.color);
         if (productIndex > -1) {
-            products[productIndex].qty += product.qty; 
+            products[productIndex].qty =parseInt(products[productIndex].qty); 
+            products[productIndex].qty += parseInt(product.qty); 
         }
         else
             products.push(product); 
