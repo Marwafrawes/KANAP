@@ -29,6 +29,7 @@ let index = 0;
 let tableauLength = productsList.length; 
 let totalCart = 0;
 let totalQty = 0;
+
 while (index < productsList.length) {
   html += makeCartProductHtml(productsList[index],index);
   totalCart += productsList[index].price * productsList[index].qty; // afficher le prix total
@@ -38,10 +39,16 @@ while (index < productsList.length) {
 
 // pour afficher les produit on fait un Appel 
 document.getElementById("cart__items").innerHTML=html; 
-console.log('totalcart',totalCart);
-
+//console.log('totalcart',totalCart);
+console.log(productsList);
 // pour afficher le prix total 
 document.getElementById("totalPrice").innerText=totalCart; 
+// Appel ListenerInput 
+index = 0; // réintialiser l'index 
+while (index < productsList.length) {
+ listenerInput(productsList[index]); 
+  index++;// incrémenter la variable de 1 
+}
 
 // pour afficher le total article 
 document.getElementById("totalQuantity").innerText=totalQty; 
@@ -74,22 +81,24 @@ function reTotalqty (){
   document.getElementById("totalPrice").innerText = totalPricenew;
 }
 // ajouter un événement pour changer la quatité totale apres modification ( ajout ou suppr) 
+function listenerInput (product){
+  let quantity = document.getElementById(product._id + '-' + product.color) // récuper les éléments d'une manière individuelle 
+  console.log(product._id + '-' + product.color);
+  quantity.addEventListener("input", () => {
+   //  alert("Valeur changée"); pour vérifier 
+    // changement de la valeur dans LocalStorage 
+    const quantityIndex = productsList.findIndex((pro) => quantity.closest('.cart__item').getAttribute('data-id') === pro._id);
+    if (quantityIndex > -1) {
+        productsList[quantityIndex].qty = quantity.value;
+        // console.log(productsList[quantityIndex].qty) ; pour vérifier 
+    }
+  localStorage.setItem('products', JSON.stringify(productsList)); 
+  reTotalqty();// pour éxuter notre fonction reTotalqty
+  reTotalprice();
+  })
+}
 
-let quantity = document.querySelector("input[name='itemQuantity']")
-quantity.addEventListener("input", () => {
- //  alert("Valeur changée"); pour vérifier 
-  // changement de la valeur dans LocalStorage 
-  const quantityIndex = productsList.findIndex((pro) => quantity.closest('.cart__item').getAttribute('data-id') === pro._id);
-  if (quantityIndex > -1) {
-      productsList[quantityIndex].qty = quantity.value;
-      // console.log(productsList[quantityIndex].qty) ; pour vérifier 
-  }
-localStorage.setItem('products', JSON.stringify(productsList)); 
-reTotalqty();// pour éxuter notre fonction reTotalqty
-reTotalprice();
-})
-
-// contruire le Html d'un prduit 
+// contruire le DOM Html d'un prduit 
 function makeCartProductHtml (product,index) {
 
 return `<article class="cart__item" data-id=${product._id} data-color=${product.color}>
@@ -105,7 +114,7 @@ return `<article class="cart__item" data-id=${product._id} data-color=${product.
   <div class="cart__item__content__settings">
     <div class="cart__item__content__settings__quantity">
       <p>Qté : </p>
-      <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${product.qty}>
+      <input id=${product._id}-${product.color} type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${product.qty}>
     </div>
     <div class="cart__item__content__settings__delete">
       <a href="#" onclick="suppprod(${index})" class="deleteItem">Supprimer</a> <!-- création bouton pour supprimer -->
@@ -121,8 +130,8 @@ return `<article class="cart__item" data-id=${product._id} data-color=${product.
 
 function validateEntry(input) {
 
-  const regName = /^[a-zA-Z ]+$/;
-//match est une fonction pour bien vérifier sir les caratères. 
+  const regName = /^[a-zA-Z ]+[a-zA-Zàâäéèêëïîôöùûüç]+$/;
+//match est une fonction pour bien vérifier les caratères. 
   if (input.value.match(regName)) {
     return true;
 
@@ -196,7 +205,7 @@ if (validContact === true) {
     city:document.getElementById("city").value,
     email:document.getElementById("email").value,
   }
-  console.log(contact);
+  //console.log(contact);
   const products = productsList.map(product => product._id);
   console.log(products);
   fetch('http://localhost:3000/api/products/order',  {
@@ -233,9 +242,11 @@ if (validContact === true) {
 } else {
   validContact = true;
 }
-e.preventDefault();// pour ne pas refraichir la page 
+// pour ne pas refraichir la page 
+
+e.preventDefault();
 });
-//////
+//////fin 
 
 
 

@@ -1,12 +1,13 @@
-//récupérer API 
+//récupérer API //Création d’un lien entre les produits de la page d’accueil et de la produit 
 
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
-const id = urlParams.get('id')
-console.log(id);
+const id = urlParams.get('id'); 
+//console.log(id);
 let product = {}; 
 let globalPrice = 0;
 fetch('http://localhost:3000/api/products/'+ id)
+//La méthode then() renvoie un objet Promiseen attente de résolution // sera appelé d'une facon Asynchrone
     .then(
 
         function(response) {
@@ -53,9 +54,12 @@ const toCartBtn = document.getElementById("addToCart");
 toCartBtn.addEventListener("click", () => {
 const color = document.querySelector('#colors').value; 
 const qty = parseInt(document.querySelector('#quantity').value); 
-product.color = color; 
-product.qty = qty; 
-addProduct(product); 
+const buy = {
+    _id: product._id,
+    color: color,
+    qty: qty
+};
+addProduct(buy);
     window.location.href = "./cart.html";
   });
   // créaton d'un Array depuis ID et stocker les donner 
@@ -76,10 +80,11 @@ function addProduct(product){
     localStorage.setItem('products', JSON.stringify(products)); // prend un objet est transforme en une chaine de caractère 
 }
  
-  
- const quantity = document.getElementById("quantity"); // récuoérer la quantité 
-// créer un évenemnt 
+// récuoérer la quantité 
+ const quantity = document.getElementById("quantity");
+// créer un évenement 
 quantity.addEventListener("change",() => {
 const price = document.getElementById("price"); 
 price.innerHTML = globalPrice * quantity.value; 
 }); 
+///fin 

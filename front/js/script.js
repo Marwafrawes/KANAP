@@ -1,3 +1,4 @@
+//une methode pour accéder à un élément avec son ID 
 const element = document.getElementById('items');
 
 fetch('http://localhost:3000/api/products')
@@ -35,7 +36,8 @@ function makeHhtmlForProduct(product) {
 }
 // fontction pour nous diriger vers une autre adresse 
 function redirect(id) {
-   // console.log(id)
+   console.log(id)
     window.location.href = `../html/product.html?id=`+id
 
 }
+///fin 
