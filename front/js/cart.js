@@ -1,12 +1,36 @@
 //cart = panier 
 //localStorage est une API qui existe dans les navigateurs pour permettre d'enregister des donnés 
 // Récupérer les infos envoyées dans le panier (transformé de JSON en objet JS et stocké dans le navigateur)
-function getProductsinLocalstorage() {
+async function  getProductsinLocalstorage() {
   let productsList = [];
   console.log(JSON.parse(localStorage.getItem("products")));
   
   if (localStorage.getItem("products") != null) {
-      productsList = JSON.parse(localStorage.getItem("products")); 
+      productsList = JSON.parse(localStorage.getItem("products"));
+      await productsList.forEach(async (product) =>   {
+       await fetch('http://localhost:3000/api/products/'+ product._id)
+//La méthode then() renvoie un objet Promiseen attente de résolution // sera appelé d'une facon Asynchrone
+    .then(
+
+        function(response) {
+            if (response.status !== 200) {
+                console.log('Looks like there was a problem. Status Code: ' +
+                    response.status);
+                return;
+            }
+
+            // Examine the text in the response
+            response.json().then(function(data) {
+                product.data = data;              
+            });
+            
+        }
+    )
+    .catch(function(err) {
+        console.log('Fetch Error :-S', err);
+    });
+        
+      });
   }
   return productsList;
 }
@@ -21,9 +45,11 @@ const sectionPositionHtml = document.getElementById("cart__items");
     let totalProductQty = 0;
     let totalPriceCart = 0; 
     let myProducts = []; 
+    console.log(productsList);
 //----------------------Fonction Calcul de la quantité total d'articles dans le panier, au chargement de la page Panier.html-----------------
 
 // boucle while si la condition est vraie 
+console.log(productsList[0]);
 let html = "";
 let index = 0;
 let tableauLength = productsList.length; 
@@ -103,13 +129,13 @@ function makeCartProductHtml (product,index) {
 
 return `<article class="cart__item" data-id=${product._id} data-color=${product.color}>
 <div class="cart__item__img">
-  <img src="${product.imageUrl}" alt="${product.altText}">
+  <img src="${product.data.imageUrl}" alt="${product.data.altText}">
 </div>
 <div class="cart__item__content">
-  <div class="cart__item__content__description">${product.description}
-    <h2>${product.name} </h2>
+  <div class="cart__item__content__description">${product.data.description}
+    <h2>${product.data.name} </h2>
     <p>${product.color}</p>
-    <p>${product.price}€</p>
+    <p>${product.data.price}€</p>
   </div>
   <div class="cart__item__content__settings">
     <div class="cart__item__content__settings__quantity">

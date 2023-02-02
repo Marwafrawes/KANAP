@@ -74,7 +74,7 @@ function addProduct(product){
         }
         else
             products.push(product); 
-    } // je fais la meme chose dans la page cart // récupérer des élments  
+    } 
     else
         products.push(product);
     localStorage.setItem('products', JSON.stringify(products)); // prend un objet est transforme en une chaine de caractère 
