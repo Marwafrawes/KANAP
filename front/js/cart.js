@@ -1,14 +1,14 @@
 //cart = panier 
 //localStorage est une API qui existe dans les navigateurs pour permettre d'enregister des donnés 
 // Récupérer les infos envoyées dans le panier (transformé de JSON en objet JS et stocké dans le navigateur)
-async function  getProductsinLocalstorage() {
+function  getProducts() {
   let productsList = [];
   console.log(JSON.parse(localStorage.getItem("products")));
   
   if (localStorage.getItem("products") != null) {
       productsList = JSON.parse(localStorage.getItem("products"));
-      await productsList.forEach(async (product) =>   {
-       await fetch('http://localhost:3000/api/products/'+ product._id)
+      productsList.forEach((product) =>   {
+     fetch('http://localhost:3000/api/products/'+ product._id)
 //La méthode then() renvoie un objet Promiseen attente de résolution // sera appelé d'une facon Asynchrone
     .then(
 
@@ -21,7 +21,16 @@ async function  getProductsinLocalstorage() {
 
             // Examine the text in the response
             response.json().then(function(data) {
-                product.data = data;              
+                product.data = data;
+                html += makeCartProductHtml(product,index);
+                console.log(totalCart);
+                totalCart += parseFloat(product.data.price) * parseInt(product.qty); // afficher le prix total
+                totalQty += parseInt(product.qty); // afficher la quantité total  
+                index++;// incrémenter la variable de 1   
+                document.getElementById("cart__items").innerHTML=html;   
+                document.getElementById("totalPrice").innerText=totalCart;
+                document.getElementById("totalQuantity").innerText = totalQty;
+                listenerInput(product);    
             });
             
         }
@@ -34,53 +43,18 @@ async function  getProductsinLocalstorage() {
   }
   return productsList;
 }
-
-//--------------------Sélection de la balise de la page product.html dans laquel on va insérer les produits et leurs infos-------------------------
-const sectionPositionHtml = document.getElementById("cart__items");
 //______déclaration des varaibles liées à la quantité et pau prix______ 
-  
-    let productsList = getProductsinLocalstorage();    
-    let totalQuantity = 0; 
-    let totalPrice = 0; 
-    let totalProductQty = 0;
-    let totalPriceCart = 0; 
-    let myProducts = []; 
-    console.log(productsList);
-//----------------------Fonction Calcul de la quantité total d'articles dans le panier, au chargement de la page Panier.html-----------------
-
-// boucle while si la condition est vraie 
-console.log(productsList[0]);
 let html = "";
 let index = 0;
-let tableauLength = productsList.length; 
+let totalPrice = 0; 
 let totalCart = 0;
 let totalQty = 0;
-
-while (index < productsList.length) {
-  html += makeCartProductHtml(productsList[index],index);
-  totalCart += productsList[index].price * productsList[index].qty; // afficher le prix total
-  totalQty += parseInt(productsList[index].qty); // afficher la quantité total  
-  index++;// incrémenter la variable de 1 
-}
-
-// pour afficher les produit on fait un Appel 
-document.getElementById("cart__items").innerHTML=html; 
+let productsList = getProducts();    
+//console.log(productsList);
 //console.log('totalcart',totalCart);
-console.log(productsList);
-// pour afficher le prix total 
-document.getElementById("totalPrice").innerText=totalCart; 
-// Appel ListenerInput 
-index = 0; // réintialiser l'index 
-while (index < productsList.length) {
- listenerInput(productsList[index]); 
-  index++;// incrémenter la variable de 1 
-}
-
-// pour afficher le total article 
-document.getElementById("totalQuantity").innerText=totalQty; 
+//console.log(productsList);
 // création d'une foction pour supprimer l'article 
 function suppprod(index){
-
     productsList.splice(index, 1); // La méthode splice() modifie le contenu d'un tableau en retirant des éléments et/ou en ajoutant de nouveaux éléments à même le tableau
     localStorage.setItem("products", JSON.stringify(productsList));
     window.location.reload() //La méthode Location.reload() recharge la ressource depuis l'URL actuelle.
@@ -101,7 +75,7 @@ function reTotalqty (){
  function reTotalprice (){
   let totalPricenew = 0; 
   for ( const item of productsList) {
-    totalPricenew += parseInt(item.price) * parseInt(item.qty);
+    totalPricenew += parseFloat(item.data.price) * parseInt(item.qty);
   }
  console.log("Nouveau prix total panier",totalPricenew);
   document.getElementById("totalPrice").innerText = totalPricenew;
@@ -149,8 +123,6 @@ return `<article class="cart__item" data-id=${product._id} data-color=${product.
 </div>
 </article> ` 
 }
-
-// console.log(localStorage);
 
 // firstName
 
@@ -273,10 +245,3 @@ if (validContact === true) {
 e.preventDefault();
 });
 //////fin 
-
-
-
-
-
-
-
