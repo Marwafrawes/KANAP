@@ -9,16 +9,13 @@ function  getProducts() {
       productsList = JSON.parse(localStorage.getItem("products"));
       productsList.forEach((product) =>   {
      fetch('http://localhost:3000/api/products/'+ product._id)
-//La méthode then() renvoie un objet Promiseen attente de résolution // sera appelé d'une facon Asynchrone
     .then(
-
         function(response) {
             if (response.status !== 200) {
                 console.log('Looks like there was a problem. Status Code: ' +
                     response.status);
                 return;
             }
-
             // Examine the text in the response
             response.json().then(function(data) {
                 product.data = data;
@@ -55,9 +52,11 @@ let productsList = getProducts();
 //console.log(productsList);
 // création d'une foction pour supprimer l'article 
 function suppprod(index){
-    productsList.splice(index, 1); // La méthode splice() modifie le contenu d'un tableau en retirant des éléments et/ou en ajoutant de nouveaux éléments à même le tableau
+  // La méthode splice() modifie le contenu d'un tableau en retirant des éléments et/ou en ajoutant de nouveaux éléments à même le tableau
+    productsList.splice(index, 1); 
     localStorage.setItem("products", JSON.stringify(productsList));
-    window.location.reload() //La méthode Location.reload() recharge la ressource depuis l'URL actuelle.
+    //La méthode Location.reload() recharge la ressource depuis l'URL actuelle.
+    window.location.reload() 
     window.scrollTo(0,0);
     //Alerte concernant un article supprimé
 alert("Ce produit va être supprimé du panier.");
@@ -93,11 +92,11 @@ function listenerInput (product){
         // console.log(productsList[quantityIndex].qty) ; pour vérifier 
     }
   localStorage.setItem('products', JSON.stringify(productsList)); 
-  reTotalqty();// pour éxuter notre fonction reTotalqty
+  // pour éxuter notre fonction reTotalqty
+  reTotalqty();
   reTotalprice();
   })
 }
-
 // contruire le DOM Html d'un prduit 
 function makeCartProductHtml (product,index) {
 
