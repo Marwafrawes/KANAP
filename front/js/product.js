@@ -63,8 +63,9 @@ addProduct(buy);
   // créaton d'un Array depuis ID et stocker les donner 
 function addProduct(product){
     let products = [];
+    product.price = null; 
     if(localStorage.getItem('products')){
-        products = JSON.parse(localStorage.getItem('products')); // prend une chaine de caractère est transforme en objet 
+        products = JSON.parse(localStorage.getItem('products')); 
         const productIndex = products.findIndex((pro) => product._id === pro._id && product.color === pro.color);
         if (productIndex > -1) {
             products[productIndex].qty =parseInt(products[productIndex].qty); 

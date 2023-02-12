@@ -18,10 +18,9 @@ function  getProducts() {
             }
             // Examine the text in the response
             response.json().then(function(data) {
-                product.data = data;
-                html += makeCartProductHtml(product,index);
+                html += makeCartProductHtml(data,index,product);
                 console.log(totalCart);
-                totalCart += parseFloat(product.data.price) * parseInt(product.qty); // afficher le prix total
+                totalCart += parseFloat(data.price) * parseInt(product.qty); // afficher le prix total
                 totalQty += parseInt(product.qty); // afficher la quantité total  
                 index++;// incrémenter la variable de 1   
                 document.getElementById("cart__items").innerHTML=html;   
@@ -82,8 +81,8 @@ function reTotalqty (){
 // ajouter un événement pour changer la quatité totale apres modification ( ajout ou suppr) 
 function listenerInput (product){
   let quantity = document.getElementById(product._id + '-' + product.color) // récuper les éléments d'une manière individuelle 
-  console.log(product._id + '-' + product.color);
   quantity.addEventListener("input", () => {
+    console.log(product._id + '-' + product.color + " val= " + quantity.value);
    //  alert("Valeur changée"); pour vérifier 
     // changement de la valeur dans LocalStorage 
     const quantityIndex = productsList.findIndex((pro) => quantity.closest('.cart__item').getAttribute('data-id') === pro._id);
@@ -92,28 +91,35 @@ function listenerInput (product){
         // console.log(productsList[quantityIndex].qty) ; pour vérifier 
     }
   localStorage.setItem('products', JSON.stringify(productsList)); 
-  // pour éxuter notre fonction reTotalqty
+ 
+  //retrouver le composant et changer le prix total d'un produit 
+  //document.getElementById("itemTotalPrice-" + product._id).innerText = product.price * quantity.value;
+  //console.log( document.getElementById("itemTotalPrice-" + product._id).innerText);
+  console.log("Ena fakroun")
+   // pour éxuter notre fonction reTotalqty
   reTotalqty();
-  reTotalprice();
+  //reTotalprice();
+  
+
   })
 }
 // contruire le DOM Html d'un prduit 
-function makeCartProductHtml (product,index) {
+function makeCartProductHtml (data,index,product) {
 
-return `<article class="cart__item" data-id=${product._id} data-color=${product.color}>
+return `<article class="cart__item" data-id=${data._id} data-color=${product.color}>
 <div class="cart__item__img">
-  <img src="${product.data.imageUrl}" alt="${product.data.altText}">
+  <img src="${data.imageUrl}" alt="${data.altText}">
 </div>
 <div class="cart__item__content">
-  <div class="cart__item__content__description">${product.data.description}
-    <h2>${product.data.name} </h2>
+  <div class="cart__item__content__description">${data.description}
+    <h2>${data.name} </h2>
     <p>${product.color}</p>
-    <p>${product.data.price}€</p>
+    <p id="itemTotalPrice-${data._id}">${data.price * product.qty}€</p>
   </div>
   <div class="cart__item__content__settings">
     <div class="cart__item__content__settings__quantity">
       <p>Qté : </p>
-      <input id=${product._id}-${product.color} type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${product.qty}>
+      <input id=${data._id}-${product.color} type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${product.qty}>
     </div>
     <div class="cart__item__content__settings__delete">
       <a href="#" onclick="suppprod(${index})" class="deleteItem">Supprimer</a> <!-- création bouton pour supprimer -->
@@ -127,7 +133,7 @@ return `<article class="cart__item" data-id=${product._id} data-color=${product.
 
 function validateEntry(input) {
 
-  const regName = /^[a-zA-Z ]+[a-zA-Zàâäéèêëïîôöùûüç]+$/;
+  const regName = /^[a-zA-Z0-9 ]+[a-zA-Z0-9 àâäéèêëïîôöùûüç]+$/;
 //match est une fonction pour bien vérifier les caratères. 
   if (input.value.match(regName)) {
     return true;
