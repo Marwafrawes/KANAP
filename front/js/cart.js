@@ -1,6 +1,7 @@
 //cart = panier 
 //localStorage est une API qui existe dans les navigateurs pour permettre d'enregister des donnés 
 // Récupérer les infos envoyées dans le panier (transformé de JSON en objet JS et stocké dans le navigateur)
+const productListData = [];
 function  getProducts() {
   let productsList = [];
   console.log(JSON.parse(localStorage.getItem("products")));
@@ -18,17 +19,19 @@ function  getProducts() {
             }
             // Examine the text in the response
             response.json().then(function(data) {
-                html += makeCartProductHtml(data,index,product);
                 console.log(totalCart);
+                productListData.push(data);
                 totalCart += parseFloat(data.price) * parseInt(product.qty); // afficher le prix total
                 totalQty += parseInt(product.qty); // afficher la quantité total  
                 index++;// incrémenter la variable de 1   
-                document.getElementById("cart__items").innerHTML=html;   
+                const div = document.createElement('div');
+                div.innerHTML = makeCartProductHtml(data,index,product);
+                document.getElementById("cart__items").append(div);   
                 document.getElementById("totalPrice").innerText=totalCart;
                 document.getElementById("totalQuantity").innerText = totalQty;
+                console.log(product);
                 listenerInput(product);    
             });
-            
         }
     )
     .catch(function(err) {
@@ -40,7 +43,6 @@ function  getProducts() {
   return productsList;
 }
 //______déclaration des varaibles liées à la quantité et pau prix______ 
-let html = "";
 let index = 0;
 let totalPrice = 0; 
 let totalCart = 0;
@@ -73,7 +75,8 @@ function reTotalqty (){
  function reTotalprice (){
   let totalPricenew = 0; 
   for ( const item of productsList) {
-    totalPricenew += parseFloat(item.data.price) * parseInt(item.qty);
+    const dataIndex = productListData.findIndex((pro) => item._id === pro._id);
+    totalPricenew += parseFloat(productListData[dataIndex].price) * parseInt(item.qty);
   }
  console.log("Nouveau prix total panier",totalPricenew);
   document.getElementById("totalPrice").innerText = totalPricenew;
@@ -81,6 +84,7 @@ function reTotalqty (){
 // ajouter un événement pour changer la quatité totale apres modification ( ajout ou suppr) 
 function listenerInput (product){
   let quantity = document.getElementById(product._id + '-' + product.color) // récuper les éléments d'une manière individuelle 
+  console.log(quantity);
   quantity.addEventListener("input", () => {
     console.log(product._id + '-' + product.color + " val= " + quantity.value);
    //  alert("Valeur changée"); pour vérifier 
@@ -98,8 +102,9 @@ function listenerInput (product){
   console.log("Ena fakroun")
    // pour éxuter notre fonction reTotalqty
   reTotalqty();
-  //reTotalprice();
-  
+  reTotalprice();
+  const dataIndex = productListData.findIndex((pro) => product._id === pro._id);
+  document.getElementById("itemTotalPrice-"+product._id).innerText = parseFloat(productListData[dataIndex].price) * parseInt(quantity.value);
 
   })
 }
