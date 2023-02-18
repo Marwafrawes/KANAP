@@ -1,4 +1,4 @@
-P5-Kanap
+#P5-Kanap
 Projet n°5 de la formation Developpeur Web OPENCLASSROOMS
 
 Construisez un site e-commerce en JavaScript
