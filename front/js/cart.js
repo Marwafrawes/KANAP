@@ -21,11 +21,13 @@ function  getProducts() {
             response.json().then(function(data) {
                 console.log(totalCart);
                 productListData.push(data);
-                totalCart += parseFloat(data.price) * parseInt(product.qty); // afficher le prix total
-                totalQty += parseInt(product.qty); // afficher la quantité total  
-                index++;// incrémenter la variable de 1   
+                // afficher le prix total
+                totalCart += parseFloat(data.price) * parseInt(product.qty); 
+                // afficher la quantité total  
+                totalQty += parseInt(product.qty); 
                 const div = document.createElement('div');
                 div.innerHTML = makeCartProductHtml(data,index,product);
+                index++;// incrémenter la variable de 1   
                 document.getElementById("cart__items").append(div);   
                 document.getElementById("totalPrice").innerText=totalCart;
                 document.getElementById("totalQuantity").innerText = totalQty;
@@ -53,11 +55,12 @@ let productsList = getProducts();
 //console.log(productsList);
 // création d'une foction pour supprimer l'article 
 function suppprod(index){
+  console.log("index:" + index + " productsList[index]: " + productsList[index]);
   // La méthode splice() modifie le contenu d'un tableau en retirant des éléments et/ou en ajoutant de nouveaux éléments à même le tableau
     productsList.splice(index, 1); 
     localStorage.setItem("products", JSON.stringify(productsList));
     //La méthode Location.reload() recharge la ressource depuis l'URL actuelle.
-    window.location.reload() 
+    window.location.reload();  
     window.scrollTo(0,0);
     //Alerte concernant un article supprimé
 alert("Ce produit va être supprimé du panier.");
@@ -83,7 +86,8 @@ function reTotalqty (){
 }
 // ajouter un événement pour changer la quatité totale apres modification ( ajout ou suppr) 
 function listenerInput (product){
-  let quantity = document.getElementById(product._id + '-' + product.color) // récuper les éléments d'une manière individuelle 
+  // récuper les éléments d'une manière individuelle
+  let quantity = document.getElementById(product._id + '-' + product.color)  
   console.log(quantity);
   quantity.addEventListener("input", () => {
     console.log(product._id + '-' + product.color + " val= " + quantity.value);
@@ -95,11 +99,6 @@ function listenerInput (product){
         // console.log(productsList[quantityIndex].qty) ; pour vérifier 
     }
   localStorage.setItem('products', JSON.stringify(productsList)); 
- 
-  //retrouver le composant et changer le prix total d'un produit 
-  //document.getElementById("itemTotalPrice-" + product._id).innerText = product.price * quantity.value;
-  //console.log( document.getElementById("itemTotalPrice-" + product._id).innerText);
-  console.log("Ena fakroun")
    // pour éxuter notre fonction reTotalqty
   reTotalqty();
   reTotalprice();

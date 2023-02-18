@@ -46,19 +46,24 @@ fetch('http://localhost:3000/api/products/'+ id)
         console.log('Fetch Error :-S', err);
     });
 
-    //HTML element  : pour ajouter les produits dans le panier 
-const toCartBtn = document.getElementById("addToCart");
-    // créer un evenement clic pour ajouter les produits 
-toCartBtn.addEventListener("click", () => {
-const color = document.querySelector('#colors').value; 
-const qty = parseInt(document.querySelector('#quantity').value); 
-const buy = {
-    _id: product._id,
-    color: color,
-    qty: qty
-};
-addProduct(buy);
-    window.location.href = "./cart.html";
+        //HTML element  : pour ajouter les produits dans le panier 
+    const toCartBtn = document.getElementById("addToCart");
+        // créer un evenement clic pour ajouter les produits 
+    toCartBtn.addEventListener("click", () => {
+    const color = document.querySelector('#colors').value; 
+    const qty = parseInt(document.querySelector('#quantity').value);
+    //condition pour bloquer le passage à la page produit si l personne n'a pas incrémenté la qty   
+    if (qty === 0) {
+        alert("Veuillez incrémenter la quantité du produit");
+    } else {
+        const buy = {
+            _id: product._id,
+            color: color,
+            qty: qty,
+        };
+        addProduct(buy);
+            window.location.href = "./cart.html";
+    }
   });
   // créaton d'un Array depuis ID et stocker les donner 
 function addProduct(product){
