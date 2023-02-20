@@ -88,11 +88,17 @@ function reTotalqty (){
 function listenerInput (product){
   // récuper les éléments d'une manière individuelle
   let quantity = document.getElementById(product._id + '-' + product.color)  
-  console.log(quantity);
   quantity.addEventListener("input", () => {
     console.log(product._id + '-' + product.color + " val= " + quantity.value);
    //  alert("Valeur changée"); pour vérifier 
     // changement de la valeur dans LocalStorage 
+    if (quantity.value <= 0  || !quantity.value) {
+      alert("Veuillez incrémenter la quantité du produit");
+      quantity.value = product.qty;
+  } else if (quantity.value >= 100) {
+      alert("Veuillez décrementer la quantité du produit");
+      quantity.value = product.qty;
+  } else{
     const quantityIndex = productsList.findIndex((pro) => quantity.closest('.cart__item').getAttribute('data-id') === pro._id);
     if (quantityIndex > -1) {
         productsList[quantityIndex].qty = quantity.value;
@@ -104,7 +110,7 @@ function listenerInput (product){
   reTotalprice();
   const dataIndex = productListData.findIndex((pro) => product._id === pro._id);
   document.getElementById("itemTotalPrice-"+product._id).innerText = parseFloat(productListData[dataIndex].price) * parseInt(quantity.value);
-
+  }
   })
 }
 // contruire le DOM Html d'un prduit 
@@ -137,7 +143,7 @@ return `<article class="cart__item" data-id=${data._id} data-color=${product.col
 
 function validateEntry(input) {
 
-  const regName = /^[a-zA-Z0-9 ]+[a-zA-Z0-9 àâäéèêëïîôöùûüç]+$/;
+  const regName = /^[a-zA-Z ]+[a-zA-Z àâäéèêëïîôöùûüç]+$/;
 //match est une fonction pour bien vérifier les caratères. 
   if (input.value.match(regName)) {
     return true;

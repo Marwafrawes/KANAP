@@ -52,10 +52,17 @@ fetch('http://localhost:3000/api/products/'+ id)
     toCartBtn.addEventListener("click", () => {
     const color = document.querySelector('#colors').value; 
     const qty = parseInt(document.querySelector('#quantity').value);
+
+    //
+        console.log(qty);
     //condition pour bloquer le passage à la page produit si l personne n'a pas incrémenté la qty   
-    if (qty === 0) {
+    if (qty <= 0 || !qty) {
         alert("Veuillez incrémenter la quantité du produit");
-    } else {
+    } else if (qty >= 100) {
+        alert("Veuillez décrementer la quantité du produit");
+    } else if (color === "") {
+        alert("Veuillez choisir la couleur");
+    } else{
         const buy = {
             _id: product._id,
             color: color,
